@@ -81,7 +81,8 @@
                     </div>
                     <div class="addr-opration addr-default" v-if="item.isDefault">默认地址</div>
                   </li>
-                  <li class="addr-new">
+
+                  <li class="addr-new" @click="addAdress=true">
                     <div class="add-new-inner">
                       <i class="icon-add">
                         <svg class="icon icon-add"><use xlink:href="#icon-add"></use></svg>
@@ -129,6 +130,7 @@
           </div>
         </div>
       </div>
+
       <modal :mdShow="isMdShow" @close="closeModal">
         <p slot="message">
           您是否确认要删除此地址?
@@ -138,6 +140,33 @@
             <a class="btn btn--m btn--red" href="javascript:;" @click="isMdShow=false">取消</a>
         </div>
       </modal>
+      <modal :mdShow="addAdress" @close="closeAddAdress">
+        <p slot="message">
+          <ul>
+            <li class="regi_form_input">
+              <i class="icon IconPeople"></i>
+              <input type="text" tabindex="1" name="userName" v-model="userName" class="regi_login_input regi_login_input_left" placeholder="收件人" data-type="userName">
+            </li>
+            <li class="regi_form_input noMargin">
+              <i class="icon IconPwd"></i>
+              <input type="tel" tabindex="2"  name="tel" v-model="tel" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="请输入收件人电话">
+            </li>
+            <li class="regi_form_input noMargin">
+              <distpicker :province="province" :city="city" :area="area"></distpicker>
+            </li>
+            <li class="regi_form_input noMargin">
+              <i class="icon IconPwd"></i>
+              <input type="text" tabindex="2"  name="adress" v-model="adress" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="输入详细地址">
+            </li>
+          </ul>
+        </p>
+        <div slot="btnGroup">
+          <a class="btn btn--m" href="javascript:;" @click="add()">确认</a>
+          <a class="btn btn--m btn--red" href="javascript:;" @click="isMdShow=false">取消</a>
+        </div>
+      </modal>
+
+
       <nav-footer></nav-footer>
     </div>
 </template>
@@ -150,6 +179,7 @@
   import Modal from './../components/Modal'
   import {currency} from './../util/currency'
   import axios from 'axios'
+  import Distpicker from 'v-distpicker'
 
   export default{
       data(){
@@ -159,7 +189,14 @@
               selectedAddrId:'',
               addressList:[],
               isMdShow:false,
-              addressId:''
+              addAdress:false,
+              addressId:'',
+              province:'北京市',
+              city:'北京城区',
+              area:'海淀区',
+              adress:'',
+              userName:'',
+              tel:''
           }
       },
       mounted(){
@@ -174,15 +211,21 @@
         NavHeader,
         NavFooter,
         NavBread,
-        Modal
+        Modal,
+        Distpicker
       },
       methods:{
           init(){
               axios.get("/users/addressList").then((response)=>{
                   let res = response.data;
                   this.addressList = res.result;
-                  this.selectedAddrId = this.addressList[0].addressId;
+                  if(this.addressList.length > 0){
+                    this.selectedAddrId = this.addressList[0].addressId
+                  }
               });
+          },
+          add(){
+
           },
           // 展开与收起
           expand(){
@@ -207,6 +250,10 @@
           // 模态框
           closeModal(){
               this.isMdShow = false;
+          },
+          // 模态框
+          closeAddAdress(){
+              this.addAdress = false;
           },
           delAddressConfirm(addressId){
             this.isMdShow = true;

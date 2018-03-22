@@ -32,6 +32,7 @@
               <div class="navbar-menu-container">
                 <span class="navbar-link" v-text="nickName" v-if="nickName"></span>
                 <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">登录</a>
+                <a href="javascript:void(0)" class="navbar-link" @click="registerModalFlag=true" v-if="!nickName">注册</a>
                 <a href="javascript:void(0)" class="navbar-link" @click="logOut" v-else>注销</a>
 
                 <div class="navbar-cart-container">
@@ -62,11 +63,11 @@
                 <ul>
                   <li class="regi_form_input">
                     <i class="icon IconPeople"></i>
-                    <input type="text" tabindex="1" name="loginname" v-model="userName" class="regi_login_input regi_login_input_left" placeholder="User Name" data-type="loginname">
+                    <input type="text" tabindex="1" name="loginname" v-model="userName" class="regi_login_input regi_login_input_left" placeholder="请输入手机号" data-type="loginname">
                   </li>
                   <li class="regi_form_input noMargin">
                     <i class="icon IconPwd"></i>
-                    <input type="password" tabindex="2"  name="password" v-model="userPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="Password" @keyup.enter="login">
+                    <input type="password" tabindex="2"  name="password" v-model="userPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="请输入密码" @keyup.enter="login">
                   </li>
                 </ul>
               </div>
@@ -77,8 +78,40 @@
           </div>
         </div>
 
+
+      <!-- 注册模态框 -->
+      <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':registerModalFlag}">
+        <div class="md-modal-inner">
+          <div class="md-top">
+            <div class="md-title">注册</div>
+            <button class="md-close" @click="registerModalFlag=false">Close</button>
+          </div>
+
+          <div class="md-content">
+            <div class="confirm-tips">
+              <div class="error-wrap">
+                <span class="error error-show" v-show="errorregistTip" v-text="registErr">请输入手机号和密码</span>
+              </div>
+              <ul>
+                <li class="regi_form_input">
+                  <i class="icon IconPeople"></i>
+                  <input type="text" tabindex="1" name="registName" v-model="registName" class="regi_login_input regi_login_input_left" placeholder="请输入手机号" data-type="loginname">
+                </li>
+                <li class="regi_form_input noMargin">
+                  <i class="icon IconPwd"></i>
+                  <input type="password" tabindex="2"  name="password" v-model="registPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="请输入密码" @keyup.enter="regist">
+                </li>
+              </ul>
+            </div>
+            <div class="login-wrap">
+              <a href="javascript:;" class="btn-login" @click="regist">注  册</a>
+            </div>
+          </div>
+        </div>
+      </div>
         <!-- 模态框遮罩层 -->
         <div class="md-overlay" v-if="loginModalFlag" @click="loginModalFlag=false"></div>
+        <div class="md-overlay" v-if="registerModalFlag" @click="registerModalFlag=false"></div>
     </header>
 </template>
 
@@ -174,10 +207,15 @@
     export default{
         data(){
             return{
-              userName:'admin',
-              userPwd:'123456',
+              registName:'',
+              registErr:'',
+              userName:'',
+              registPwd:'',
+              userPwd:'',
               errorTip:false,
-              loginModalFlag:false
+              errorregistTip:false,
+              loginModalFlag:false,
+              registerModalFlag:false,
             }
         },
         computed:{
@@ -193,6 +231,31 @@
             this.checkLogin();
         },
         methods:{
+          regist(){
+            this.loginModalFlag = true
+            if(!this.registName || !this.registPwd){
+              this.errorregistTip = true;
+              this.registErr = '请输入用户名和密码';
+              return;
+            }
+            axios.post("/users/regist",{
+              userName:this.registName,
+              userPwd:this.registPwd
+            }).then((response)=>{
+              let res = response.data;
+              if(res.status==0){
+                this.errorregistTip = false;
+                this.loginModalFlag = false;
+                this.$store.commit("updateUserInfo",res.result.userName);
+                this.getCartCount();
+              }else{
+                this.errorregistTip = true;
+                this.registErr = res.msg;
+              }
+            })
+
+          },
+
             checkLogin(){
                 axios.get("/users/checkLogin").then((response)=>{
                     var res = response.data;
@@ -234,6 +297,7 @@
                     if(res.status=="0"){
 //                        this.nickName = '';
                         this.$store.commit("updateUserInfo",res.result.userName);
+
                     }
                 })
             },

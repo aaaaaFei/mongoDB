@@ -54,6 +54,67 @@ router.post("/login", function (req,res,next) {
   });
 });
 
+router.post("/regist",function(req, res, next){
+  var param = {
+    userName:req.body.userName,
+    userPwd:req.body.userPwd
+  }
+  User.find({userName:param.userName}, function(err, data){
+    if(data.length == 0){
+      User.find(function(err, data){
+        var userID = 100000077 + Number(data.length)
+      var newUser = new User({
+        _id:param.userName + Math.random(),
+        userName:param.userName,
+        userPwd:param.userPwd,
+        userId:userID.toString(),
+        orderList:[],
+        cartList:[],
+        addressList:[]
+      }, {
+        usePushEach: true
+      })
+      newUser.save((err, user) => {
+        if(err){
+          res.json({
+            status:1,
+            msg:'注册失败',
+            result:''
+          })
+        }else {
+          res.cookie("userId",user.userId,{
+            path:'/',
+            // cookie 周期，1小时
+            maxAge:1000*60*60
+          });
+          res.cookie("userName",user.userName,{
+            path:'/',
+            maxAge:1000*60*60
+          });
+          res.json({
+            status:0,
+            msg:'注册成功',
+            result:{
+              userName:user.userName
+            }
+          })
+        }
+
+          })
+
+      })
+    }else {
+      res.json({
+        status:1,
+        msg:'此用户已存在',
+        result:''
+      })
+    }
+  })
+
+
+})
+
 //登出接口
 router.post("/logout", function (req,res,next) {
   // 清除 cookie
@@ -87,7 +148,6 @@ router.get("/checkLogin", function (req,res,next) {
 
 // 购物车
 router.get("/getCartCount", function (req,res,next) {
-  if(req.cookies && req.cookies.userId){
     console.log("userId:"+req.cookies.userId);
     var userId = req.cookies.userId;
     User.findOne({"userId":userId}, function (err,doc) {
@@ -109,12 +169,6 @@ router.get("/getCartCount", function (req,res,next) {
         });
       }
     });
-  }else{
-    res.json({
-      status:"0",
-      msg:"当前用户不存在"
-    });
-  }
 });
 
 // 查询当前用户的购物车数据
@@ -442,5 +496,8 @@ router.get("/orderDetail", function (req,res,next) {
       }
   })
 });
+
+
+
 
 module.exports = router;
