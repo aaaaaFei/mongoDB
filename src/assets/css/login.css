@@ -5,7 +5,6 @@
   background: none;
   margin-bottom: 15px;
   font-size: 14px;
-  overflow: hidden;
   border:1px solid #ccc;
   padding-bottom: 0;
 }
@@ -37,14 +36,26 @@
   background: 0 0!important;
 }
 .md-title{
-  position: absolute;
-  top: 14px;
+  position: relative;
   line-height: 24px;
   padding: 8px 0;
   color: #333;
   font-size: 18px;
   font-weight: 400;
   font-style: normal;
+}
+.width100{
+  width: 100%;
+}
+.distpicker-address-wrapper select{
+  border:none !important;
+  flex: 1;
+}
+.distpicker-address-wrapper select:first-child{
+  width: 100px;
+}
+.distpicker-address-wrapper{
+  display: flex;
 }
 .login-wrap{
   margin-top:30px;

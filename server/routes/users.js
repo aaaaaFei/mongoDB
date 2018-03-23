@@ -146,6 +146,39 @@ router.get("/checkLogin", function (req,res,next) {
   }
 });
 
+// 添加地址
+router.post("/pushAddress", function (req,res,next) {
+  var userId = req.cookies.userId
+  var data = req.body
+  User.findOne({userId:userId}, function (err,doc) {
+    if(err){
+      res.json({
+        status:0,
+        msg:err.message,
+        result:''
+      });
+    } else {
+      var addressList = doc.addressList;
+      addressList.push(data);
+      doc.save(function (err1,doc1) {
+        if(err1){
+          res.json({
+            status:0,
+            msg:err.message,
+            result:''
+          });
+        }else {
+          res.json({
+            status:1,
+            msg:'添加地址成功',
+            result:''
+          });
+        }
+      })
+    }
+  })
+})
+
 // 购物车
 router.get("/getCartCount", function (req,res,next) {
     console.log("userId:"+req.cookies.userId);
@@ -381,6 +414,8 @@ router.post("/delAddress", function (req,res,next) {
   });
 });
 
+
+// 订单完成接口
 router.post("/payMent", function (req,res,next) {
   var userId = req.cookies.userId,
     addressId = req.body.addressId,

@@ -60,12 +60,12 @@
                 <div class="error-wrap">
                   <span class="error error-show" v-show="errorTip">用户名或者密码错误</span>
                 </div>
-                <ul>
-                  <li class="regi_form_input">
+                <ul class="width100">
+                  <li class="regi_form_input width100">
                     <i class="icon IconPeople"></i>
                     <input type="text" tabindex="1" name="loginname" v-model="userName" class="regi_login_input regi_login_input_left" placeholder="请输入手机号" data-type="loginname">
                   </li>
-                  <li class="regi_form_input noMargin">
+                  <li class="regi_form_input noMargin width100">
                     <i class="icon IconPwd"></i>
                     <input type="password" tabindex="2"  name="password" v-model="userPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="请输入密码" @keyup.enter="login">
                   </li>
@@ -92,12 +92,12 @@
               <div class="error-wrap">
                 <span class="error error-show" v-show="errorregistTip" v-text="registErr">请输入手机号和密码</span>
               </div>
-              <ul>
-                <li class="regi_form_input">
+              <ul class="width100">
+                <li class="regi_form_input width100">
                   <i class="icon IconPeople"></i>
                   <input type="text" tabindex="1" name="registName" v-model="registName" class="regi_login_input regi_login_input_left" placeholder="请输入手机号" data-type="loginname">
                 </li>
-                <li class="regi_form_input noMargin">
+                <li class="regi_form_input noMargin width100">
                   <i class="icon IconPwd"></i>
                   <input type="password" tabindex="2"  name="password" v-model="registPwd" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="请输入密码" @keyup.enter="regist">
                 </li>
@@ -232,7 +232,7 @@
         },
         methods:{
           regist(){
-            this.loginModalFlag = true
+            this.registerModalFlag = true
             if(!this.registName || !this.registPwd){
               this.errorregistTip = true;
               this.registErr = '请输入用户名和密码';
@@ -245,7 +245,7 @@
               let res = response.data;
               if(res.status==0){
                 this.errorregistTip = false;
-                this.loginModalFlag = false;
+                this.registerModalFlag = false;
                 this.$store.commit("updateUserInfo",res.result.userName);
                 this.getCartCount();
               }else{

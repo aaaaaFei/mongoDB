@@ -46,7 +46,7 @@
 
 ## 实现细节
 
-主要页面：首页 (商品模块)、用户模块、地址模块、购物车模块、订单模块
+主要页面：首页 (商品模块)、用户模块、地址模块、购物车模块、订单模块、用户注册模块
 
 **首页 (商品模块)**
 
@@ -86,13 +86,14 @@
 ## Build Setup
 
 ``` bash
-# clone the repo into your disk.
-$ git clone https://github.com/bxm0927/lottery.git
+# 通过git  下载项目
+$ git clone https://github.com/aaaaaFei/mongoDB.git
 
 # 安装依赖
 $ npm install
 
 # 导入 MongoDB 数据
+# -d (数据库名字) -c(数据表名字) --file(数据库模板文件目录)
 $ mongoimport -d vue_xiaomi -c goods --file E:\resource\dumall-goods
 $ mongoimport -d vue_xiaomi -c users --file E:\resource\dumall-users
 
@@ -103,9 +104,3 @@ $ npm run dev
 $ node server/bin/www
 ```
 
-
-## License
-
-The code is available under the [MIT license](https://opensource.org/licenses/MIT).
-
-<!-- ![](http://oph264zoo.bkt.clouddn.com/17-8-11/10545126.jpg) -->

@@ -141,7 +141,7 @@
         </div>
       </modal>
       <modal :mdShow="addAdress" @close="closeAddAdress">
-        <p slot="message">
+        <div slot="message">
           <ul>
             <li class="regi_form_input">
               <i class="icon IconPeople"></i>
@@ -149,20 +149,20 @@
             </li>
             <li class="regi_form_input noMargin">
               <i class="icon IconPwd"></i>
-              <input type="tel" tabindex="2"  name="tel" v-model="tel" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="请输入收件人电话">
+              <input type="number" tabindex="2"  name="tel" v-model="tel" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="请输入收件人电话">
             </li>
             <li class="regi_form_input noMargin">
               <distpicker :province="province" :city="city" :area="area"></distpicker>
             </li>
             <li class="regi_form_input noMargin">
               <i class="icon IconPwd"></i>
-              <input type="text" tabindex="2"  name="adress" v-model="adress" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="输入详细地址">
+              <input type="text" tabindex="2"  name="etailAddress" v-model="detailAddress" class="regi_login_input regi_login_input_left login-input-no input_text" placeholder="输入详细地址">
             </li>
           </ul>
-        </p>
-        <div slot="btnGroup">
-          <a class="btn btn--m" href="javascript:;" @click="add()">确认</a>
-          <a class="btn btn--m btn--red" href="javascript:;" @click="isMdShow=false">取消</a>
+        </div>
+        <div slot="btnGroup" class="width100">
+          <a class="btn btn--m" href="javascript:;" @click="pushAdress">确认</a>
+          <a class="btn btn--m btn--red" href="javascript:;" @click="addAdress=false">取消</a>
         </div>
       </modal>
 
@@ -194,7 +194,7 @@
               province:'北京市',
               city:'北京城区',
               area:'海淀区',
-              adress:'',
+              detailAddress:'',
               userName:'',
               tel:''
           }
@@ -224,8 +224,25 @@
                   }
               });
           },
-          add(){
+        pushAdress(){
+            const addressId = Math.floor(Math.random()*100000);
+            const data = {
+              userName:this.userName,
+              streetName:this.province+this.city+this.area,
+              detailAddress:this.detailAddress,
+              addressId:addressId.toString(),
+              tel:Number(this.tel),
+              postCode:addressId,
+              isDefault:false
+            }
+            axios.post('/users/pushAddress',data).then((res) => {
+              if(res.data.status == 1){
+                this.closeAddAdress()
+                this.init()
+              }else{
 
+              }
+            })
           },
           // 展开与收起
           expand(){
